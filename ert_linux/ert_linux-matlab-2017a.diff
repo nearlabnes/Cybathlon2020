@@ -1,0 +1,52 @@
+diff --git a/ert_linux/ert_linux.tlc b/ert_linux/ert_linux.tlc
+index 3a0d73f..9855440 100644
+--- a/ert_linux/ert_linux.tlc
++++ b/ert_linux/ert_linux.tlc
+@@ -29,7 +29,6 @@
+ 
+ %assign TargetRegistMutexOp   = 1 
+ %assign TargetRegistSynchroOp = 1
+-%include "commontargetlib.tlc"
+ 
+ %include "codegenentry.tlc"
+ %include "ert_linux_genfiles.tlc"
+diff --git a/ert_linux/ert_linux.tmf b/ert_linux/ert_linux.tmf
+index 8454d28..1221e0d 100644
+--- a/ert_linux/ert_linux.tmf
++++ b/ert_linux/ert_linux.tmf
+@@ -350,7 +350,7 @@ ifeq ($(SFCN),0)
+         PREBUILT_SRCS      = $(MODULES)
+         PREBUILT_OBJS      = $(addsuffix .o, $(basename $(PREBUILT_SRCS)))
+         PRODUCT            = $(MODEL)
+-        BIN_SETTING        = $(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) -o $(PRODUCT)
++        BIN_SETTING        = $(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) -o $(PRODUCT) ert_main.o
+         BUILD_PRODUCT_TYPE = "executable"
+       else
+         SRCS               += $(MODULES) $(MODEL).$(TARGET_LANG_EXT) $(EXT_SRC)
+@@ -361,7 +361,7 @@ ifeq ($(SFCN),0)
+         else
+           # ERT standalone
+           PRODUCT            = $(RELATIVE_PATH_TO_ANCHOR)/$(MODEL)
+-          BIN_SETTING        = $(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) -o $(PRODUCT)
++          BIN_SETTING        = $(LD) $(LDFLAGS) $(ADDITIONAL_LDFLAGS) -o $(PRODUCT) ert_main.o
+           BUILD_PRODUCT_TYPE = "executable"
+         endif
+       endif
+@@ -409,7 +409,7 @@ ifneq ($(findstring .cpp,$(suffix $(SRCS), $(USER_SRCS), $(PREBUILT_SRCS))),)
+ endif
+ #----------------------------- Lint (sol2 only) --------------------------------
+ 
+-LINT_SRCS = $(MATLAB_ROOT)/rtw/c/src/common/rt_main.c
++LINT_SRCS = ert_main.c
+ LINT_SRCS += $(MODEL).$(TARGET_LANG_EXT) $(MODULES) $(USER_SRCS) $(S_FUNCTIONS)
+ LINTOPTSFILE = $(MODEL).lintopts
+ 
+@@ -449,7 +449,7 @@ $(PRODUCT) : $(PREBUILT_OBJS) $(OBJS) $(SHARED_LIB) $(LIBS) $(SRC_DEP) $(MODELLI
+ $(PRODUCT) : $(OBJS) $(SHARED_LIB) $(LIBS) $(SRC_DEP) $(MODELREF_LINK_LIBS)
+ 	@echo "### Created $(BUILD_PRODUCT_TYPE): $@"
+     else
+-$(PRODUCT) : $(OBJS) $(SHARED_LIB) $(LIBS) $(SRC_DEP) $(MODELREF_LINK_LIBS)
++$(PRODUCT) : ert_main.o $(OBJS) $(SHARED_LIB) $(LIBS) $(SRC_DEP) $(MODELREF_LINK_LIBS)
+ 	$(BIN_SETTING) $(LINK_OBJS) $(MODELREF_LINK_LIBS) $(SHARED_LIB) $(LIBFIXPT) $(LIBS)  $(SYSLIBS)
+ 	@echo "### Created $(BUILD_PRODUCT_TYPE): $@"
+     endif
