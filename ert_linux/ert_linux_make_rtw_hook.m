@@ -17,7 +17,7 @@ function ert_linux_make_rtw_hook(hookMethod,modelName,rtwroot,templateMakefile,b
    case 'after_make'
     % do nothing
 	if (~isempty(strfind(buildArgs, 'arm-linux-gnueabihf-gcc')))
-        unix(strcat('sshpass -p "constantin" scp ../', modelName, ' constantin@192.168.7.2:'), '-echo');
+        unix(strcat('scp ../', modelName, ' root@192.168.7.2:'), '-echo');
     end
    case 'exit'
     disp('Done building');    
